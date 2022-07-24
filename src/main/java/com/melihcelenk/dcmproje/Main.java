@@ -1,19 +1,13 @@
 package com.melihcelenk.dcmproje;
 
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.Tag;
-import org.dcm4che3.data.VR;
-import org.dcm4che3.io.DicomInputStream;
-import org.dcm4che3.io.DicomOutputStream;
-import org.dcm4che3.util.UIDUtils;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /*
  * @Author : Melih Çelenk
@@ -23,52 +17,35 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        for(int i=1; i<=15; i++){
-            String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\Patient"+i+"\\";
-            File dicomPath = new File(sourcePathStr);
-
-            System.out.println("*********************************"+sourcePathStr+"****************************************");
-            int length = new File(sourcePathStr).list().length;
-            System.out.println("Dosya sayısı:" + length);
-
-            for(int j=1; j<=length; j++){
-                File file = new File(dicomPath, "IM-"+String.format("%04d", j)+".dcm");
-
-                //LOG.info(String.valueOf(reader.getMetaData().getInt(Tag.DiffusionBValue, 0)));
-                DicomInputStream dis = null;
-                try {
-                    dis = new DicomInputStream(file);
-                    Attributes fmi = dis.readFileMetaInformation();
-                    Attributes attrs = dis.readDataset(-1, -1);
-
-                    System.out.println("--------IM-"+String.format("%04d", j)+".dcm-------------------------------------");
-                    //Attrs.areValuesEmpty(attrs);
-                    Attrs.changeValues(attrs, DateUtils.getTodayDate(), DateUtils.getTodayTime(),i);
-
-                    // NEW FILE
-                    String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler\\Patient"+i+"\\";
-                    FileUtils.createFolder(destinationPathStr);
-                    File newFile = new File(destinationPathStr, "IM-"+String.format("%04d", j)+".dcm");
-                    DicomOutputStream dos = new DicomOutputStream(newFile);
-
-                    dos.writeDataset(fmi, attrs);
-
-                    dos.flush();
-                    dos.close();
-                    if (Objects.nonNull(dis)) dis.close();
-
-                } catch (IOException e) {
-                    //throw new RuntimeException(e);
-                }
+        String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\";
+        List<String> fileNames = new ArrayList<String>();
 
 
-            }
+        try (Stream<Path> walk = Files.walk(Paths.get(sourcePathStr))) {
+            AtomicInteger patientID = new AtomicInteger(1);
+            walk.filter(Files::isDirectory)
+                    .forEach(path -> {
+                        fileNames.add(path.toString());
+                        System.out.println(path.toString());
+                        String pathStr = path.toString();
+                        String separator = "\\";
+                        String folderName[] = pathStr.split("KANAMA\\\\");
+                        try{
+                            String pathologyName = folderName[1];
+                            Attrs.study(pathologyName, pathStr, patientID.get());
+                            patientID.getAndIncrement();
+                        }catch(Exception e){
+
+                        }
+
+
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
-
-
-
-
     }
+
+
 }
