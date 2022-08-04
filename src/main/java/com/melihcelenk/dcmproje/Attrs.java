@@ -98,7 +98,7 @@ public class Attrs {
 
     public static void changeValues(Attributes attrs, String dateToday, String timeToday, int patientID, String pathologyName) {
         attrs.setString(Tag.StudyDescription, VR.LO, "Hemorrhage-Test-" + pathologyName); // -EDH, easy
-        attrs.setString(Tag.SeriesDescription, VR.LO, "Non-Contrast CT");
+        //attrs.setString(Tag.SeriesDescription, VR.LO, "Non-Contrast CT");
 
         attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
         attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
@@ -119,11 +119,13 @@ public class Attrs {
         attrs.setString(Tag.PatientSex, VR.CS, "M");
         attrs.setString(Tag.PatientAge, VR.AS, "055Y");
 
-        attrs.setString(Tag.SeriesNumber, VR.IS, "1");
+        // attrs.setString(Tag.SeriesNumber, VR.IS, "1");
 
         attrs.setString(Tag.AcquisitionNumber, VR.IS, "1");
 
+        attrs.setString(Tag.SliceThickness, VR.DS, "5");
 
+        System.out.println("-->" + attrs.getString(Tag.StudyDescription));
     }
 
     public static void study(String pathologyName, String sourcePathStr, int number) {
@@ -141,9 +143,15 @@ public class Attrs {
         System.out.println("*********************************" + sourcePathStr + "****************************************");
         int length = new File(sourcePathStr).list().length;
         System.out.println("Dosya sayısı:" + length);
+        for (String s : dicomPath.list()) {
+            System.out.println(s);
+        }
 
-        for (int j = 1; j <= length; j++) {
-            File file = new File(dicomPath, "IM-" + String.format("%04d", j) + ".dcm");
+        for (String s : dicomPath.list()) {
+
+            //File file = new File(dicomPath, "IM-" + String.format("%04d", j) + ".dcm");
+
+            File file = new File(dicomPath, s);
 
             //LOG.info(String.valueOf(reader.getMetaData().getInt(Tag.DiffusionBValue, 0)));
             DicomInputStream dis = null;
@@ -152,14 +160,15 @@ public class Attrs {
                 Attributes fmi = dis.readFileMetaInformation();
                 Attributes attrs = dis.readDataset(-1, -1);
 
-                System.out.println("--------IM-" + String.format("%04d", j) + ".dcm-------------------------------------");
+                System.out.println(s);
                 //Attrs.areValuesEmpty(attrs);
                 Attrs.changeValues(attrs, todayDate, todayTime, number, pathologyName);
 
                 // NEW FILE
-                String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler\\Patient" + number + "\\";
+                //String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler\\Patient" + number + "\\";
+                String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler-ge-demo\\Patient" + number + "\\";
                 FileUtils.createFolder(destinationPathStr);
-                File newFile = new File(destinationPathStr, "IM-" + String.format("%04d", j) + ".dcm");
+                File newFile = new File(destinationPathStr, s);
                 DicomOutputStream dos = new DicomOutputStream(newFile);
 
                 dos.writeDataset(fmi, attrs);

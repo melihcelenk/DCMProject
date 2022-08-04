@@ -17,19 +17,20 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\";
+        //String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\";
+        String sourcePathStr = "D:\\Users\\melih\\Documents\\HEVI\\ge-demo\\";
         List<String> fileNames = new ArrayList<String>();
 
 
         try (Stream<Path> walk = Files.walk(Paths.get(sourcePathStr))) {
-            AtomicInteger patientID = new AtomicInteger(1);
+            AtomicInteger patientID = new AtomicInteger(16);
             walk.filter(Files::isDirectory)
                     .forEach(path -> {
                         fileNames.add(path.toString());
                         System.out.println(path.toString());
                         String pathStr = path.toString();
                         String separator = "\\";
-                        String folderName[] = pathStr.split("KANAMA\\\\");
+                        String folderName[] = pathStr.split("ge-demo\\\\");
                         try{
                             String pathologyName = folderName[1];
                             Attrs.study(pathologyName, pathStr, patientID.get());
