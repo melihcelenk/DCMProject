@@ -94,41 +94,47 @@ public class Attrs {
         if (attrs.getString(Tag.InstanceNumber) == null || attrs.getString(Tag.InstanceNumber) == "") {
             System.out.println("InstanceNumber boş");
         }
+
+        if(attrs.getString(Tag.Modality).equals("MR")) {
+            if (attrs.getString(Tag.DiffusionBValue)==null) {
+                System.out.println("DiffusionBValue boş ve Modality=MR");
+            }
+        }
     }
 
-    public static void changeValues(Attributes attrs, String dateToday, String timeToday, int patientID, String pathologyName) {
-        attrs.setString(Tag.StudyDescription, VR.LO, "Hemorrhage-Test-" + pathologyName); // -EDH, easy
-        //attrs.setString(Tag.SeriesDescription, VR.LO, "Non-Contrast CT");
+    public static void changeValues(Attributes attrs, String dateToday, String timeToday, int patientID, String seriesDescription) {
+        attrs.setString(Tag.StudyDescription, VR.LO, "MRI-Beyin "); // -EDH, easy
+        attrs.setString(Tag.SeriesDescription, VR.LO, seriesDescription);
 
-        attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
-        attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
+        //attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
+        //attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
 
-        attrs.setString(Tag.AcquisitionDate, VR.DA, dateToday);
-        attrs.setString(Tag.AcquisitionTime, VR.TM, timeToday);
+//        attrs.setString(Tag.AcquisitionDate, VR.DA, dateToday);
+//        attrs.setString(Tag.AcquisitionTime, VR.TM, timeToday);
 
-        attrs.setString(Tag.StudyDate, VR.DA, dateToday);
-        attrs.setString(Tag.StudyTime, VR.TM, timeToday + "000"); // Format farklı StudyTime: 181011.629388
+//        attrs.setString(Tag.StudyDate, VR.DA, dateToday);
+//        attrs.setString(Tag.StudyTime, VR.TM, timeToday + "000"); // Format farklı StudyTime: 181011.629388
 
         attrs.setString(Tag.PatientID, VR.LO, patientID + "");
-        attrs.setString(Tag.PatientName, VR.PN, "Patient-" + patientID + "");
+        attrs.setString(Tag.PatientName, VR.PN, "Patient-MR-" + patientID + "");
         attrs.setString(Tag.AccessionNumber, VR.LO, patientID + "");
 
-        attrs.setString(Tag.Manufacturer, VR.LO, "GE");
+//        attrs.setString(Tag.Manufacturer, VR.LO, "GE");
 
-        attrs.setString(Tag.PatientBirthDate, VR.DA, "19670501");
-        attrs.setString(Tag.PatientSex, VR.CS, "M");
+//        attrs.setString(Tag.PatientBirthDate, VR.DA, "19670501");
+//        attrs.setString(Tag.PatientSex, VR.CS, "M");
         attrs.setString(Tag.PatientAge, VR.AS, "055Y");
 
         // attrs.setString(Tag.SeriesNumber, VR.IS, "1");
 
-        attrs.setString(Tag.AcquisitionNumber, VR.IS, "1");
+//        attrs.setString(Tag.AcquisitionNumber, VR.IS, "1");
 
-        attrs.setString(Tag.SliceThickness, VR.DS, "5");
+//        attrs.setString(Tag.SliceThickness, VR.DS, "5");
 
         System.out.println("-->" + attrs.getString(Tag.StudyDescription));
     }
 
-    public static void study(String pathologyName, String sourcePathStr, int number) {
+    public static void study(String sourcePathStr, int number, String seriesDescription) {
         String todayDate = DateUtils.getTodayDate();
         String todayTime = DateUtils.getTodayTime();
 
@@ -160,13 +166,20 @@ public class Attrs {
                 Attributes fmi = dis.readFileMetaInformation();
                 Attributes attrs = dis.readDataset(-1, -1);
 
-                System.out.println(s);
-                //Attrs.areValuesEmpty(attrs);
-                Attrs.changeValues(attrs, todayDate, todayTime, number, pathologyName);
+                System.out.println(":::" + s);
+
+                Attrs.areValuesEmpty(attrs);
+
+
+                Attrs.changeValues(attrs, todayDate, todayTime, number, seriesDescription);
 
                 // NEW FILE
                 //String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler\\Patient" + number + "\\";
-                String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler-ge-demo\\Patient" + number + "\\";
+                //String destinationPathStr = "D:\\HEVI\\VERİ\\yeni-mri\\Patient" + number + "\\";
+                String destinationPathStr = "D:\\HEVI\\VERİ\\yeni-mri\\"+attrs.getString(Tag.PatientID) + "-" + attrs.getString(Tag.PatientName)+ "\\" +
+                                                                        attrs.getString(Tag.StudyInstanceUID) + "-" + attrs.getString(Tag.StudyDescription) + "\\" +
+                                                                        attrs.getString(Tag.SeriesInstanceUID) + "-" + attrs.getString((Tag.SeriesDescription));
+
                 FileUtils.createFolder(destinationPathStr);
                 File newFile = new File(destinationPathStr, s);
                 DicomOutputStream dos = new DicomOutputStream(newFile);

@@ -18,23 +18,39 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         //String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\";
-        String sourcePathStr = "D:\\Users\\melih\\Documents\\HEVI\\ge-demo\\";
+        String sourcePathStr = "D:\\HEVI\\VERİ\\mri\\";
         List<String> fileNames = new ArrayList<String>();
 
 
         try (Stream<Path> walk = Files.walk(Paths.get(sourcePathStr))) {
-            AtomicInteger patientID = new AtomicInteger(16);
+            AtomicInteger patientID = new AtomicInteger(18);
             walk.filter(Files::isDirectory)
                     .forEach(path -> {
                         fileNames.add(path.toString());
-                        System.out.println(path.toString());
+                        //System.out.println( path.toString());
                         String pathStr = path.toString();
                         String separator = "\\";
-                        String folderName[] = pathStr.split("ge-demo\\\\");
+                        String folderName[] = pathStr.split("mri\\\\");
+
+
+
                         try{
-                            String pathologyName = folderName[1];
-                            Attrs.study(pathologyName, pathStr, patientID.get());
-                            patientID.getAndIncrement();
+                            System.out.println(folderName[1]);
+                            String baseFolder[] = folderName[1].split(("\\\\"));
+                            System.out.println(baseFolder.length);
+
+
+                            // şu an hedef klasör yapısı bu şekilde:
+                            // patientID-patientName/studyInstanceUID-studyDescription/seriesInstanceUID-seriesDescription/instanceUID.dcm
+                            // Bir sonraki veri için kaynak klasörler yukarıdaki gibi düzenlenirse baseFolder[1] yerine baseFolder[2] kullanılması gerekir
+
+                            if(baseFolder.length>1){
+                                Attrs.study(pathStr, patientID.get(), baseFolder[1]); // Her bir ana klasörde 2 serie vardı. SeriesDescription bu klasörlerin isimlerinden alındı. Standart bir yapı olması için kaynak klasörler de aşağıdaki şekilde düzenlenebilir
+                            }
+                            else if(baseFolder.length==1){
+                                patientID.getAndIncrement();
+                            }
+
                         }catch(Exception e){
 
                         }
