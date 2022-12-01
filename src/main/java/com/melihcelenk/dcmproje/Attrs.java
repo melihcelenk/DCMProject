@@ -123,7 +123,10 @@ public class Attrs {
 
         attrs.setString(Tag.AcquisitionNumber, VR.IS, "1");
 
+        attrs.setString(Tag.InstitutionName, VR.LO, "Hospital-1" );
+        attrs.setString(Tag.StationName, VR.SH, "Station-1");
 
+        attrs.setString(Tag.SliceThickness, VR.DS, "5");
     }
 
     public static void study(String pathologyName, String sourcePathStr, int number) {
