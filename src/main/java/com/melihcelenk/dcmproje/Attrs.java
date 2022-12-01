@@ -106,8 +106,10 @@ public class Attrs {
         attrs.setString(Tag.StudyDescription, VR.LO, "MRI-Beyin "); // -EDH, easy
         attrs.setString(Tag.SeriesDescription, VR.LO, seriesDescription);
 
-        //attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
-        //attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
+        attrs.setString(Tag.StudyID, VR.SH, patientID + "");
+
+        attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
+        attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
 
 //        attrs.setString(Tag.AcquisitionDate, VR.DA, dateToday);
 //        attrs.setString(Tag.AcquisitionTime, VR.TM, timeToday);
@@ -117,7 +119,7 @@ public class Attrs {
 
         attrs.setString(Tag.PatientID, VR.LO, patientID + "");
         attrs.setString(Tag.PatientName, VR.PN, "Patient-MR-" + patientID + "");
-        attrs.setString(Tag.AccessionNumber, VR.LO, patientID + "");
+        attrs.setString(Tag.AccessionNumber, VR.LO, "MR" + attrs.getString(Tag.StudyID));
 
 //        attrs.setString(Tag.Manufacturer, VR.LO, "GE");
 
@@ -125,12 +127,18 @@ public class Attrs {
 //        attrs.setString(Tag.PatientSex, VR.CS, "M");
         attrs.setString(Tag.PatientAge, VR.AS, "055Y");
 
+        if(seriesDescription=="DIF") {
+            attrs.setString(Tag.DiffusionBValue, VR.FD, "1000");
+        }
+
         // attrs.setString(Tag.SeriesNumber, VR.IS, "1");
 
 //        attrs.setString(Tag.AcquisitionNumber, VR.IS, "1");
 
-//        attrs.setString(Tag.SliceThickness, VR.DS, "5");
+        attrs.setString(Tag.SliceThickness, VR.DS, "5");
 
+        attrs.setString(Tag.InstitutionName, VR.LO, "Hospital-1");
+        attrs.setString(Tag.StationName, VR.SH, "Station-1");
         System.out.println("-->" + attrs.getString(Tag.StudyDescription));
     }
 
