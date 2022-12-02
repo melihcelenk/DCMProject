@@ -17,20 +17,20 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        //String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\";
-        String sourcePathStr = "D:\\HEVI\\VERİ\\mri\\";
+        String sourcePathStr = "D:\\HEVI\\VERİ\\CTA data\\";
         List<String> fileNames = new ArrayList<String>();
 
 
         try (Stream<Path> walk = Files.walk(Paths.get(sourcePathStr))) {
-            AtomicInteger patientID = new AtomicInteger(18);
+            AtomicInteger patientID = new AtomicInteger(25);
             walk.filter(Files::isDirectory)
                     .forEach(path -> {
                         fileNames.add(path.toString());
-                        //System.out.println( path.toString());
+
                         String pathStr = path.toString();
-                        String separator = "\\";
-                        String folderName[] = pathStr.split("mri\\\\");
+                        System.out.println("->" + pathStr);
+
+                        String folderName[] = pathStr.split("CTA data\\\\");
 
 
 
@@ -45,10 +45,11 @@ public class Main {
                             // Bir sonraki veri için kaynak klasörler yukarıdaki gibi düzenlenirse baseFolder[1] yerine baseFolder[2] kullanılması gerekir
 
                             if(baseFolder.length>1){
-                                Attrs.study(pathStr, patientID.get(), baseFolder[1]); // Her bir ana klasörde 2 serie vardı. SeriesDescription bu klasörlerin isimlerinden alındı. Standart bir yapı olması için kaynak klasörler de aşağıdaki şekilde düzenlenebilir
+
                             }
                             else if(baseFolder.length==1){
                                 patientID.getAndIncrement();
+                                Attrs.study(pathStr, patientID.get(), "CTA-LVO-Test-Series"); // Her bir ana klasörde 2 serie vardı. SeriesDescription bu klasörlerin isimlerinden alındı. Standart bir yapı olması için kaynak klasörler de aşağıdaki şekilde düzenlenebilir
                             }
 
                         }catch(Exception e){

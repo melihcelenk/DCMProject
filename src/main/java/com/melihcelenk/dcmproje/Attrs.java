@@ -103,28 +103,29 @@ public class Attrs {
     }
 
     public static void changeValues(Attributes attrs, String dateToday, String timeToday, int patientID, String seriesDescription) {
-        attrs.setString(Tag.StudyDescription, VR.LO, "MRI-Beyin "); // -EDH, easy
+        attrs.setString(Tag.StudyDescription, VR.LO, "CTA-LVO-Test-Study"); // -EDH, easy
         attrs.setString(Tag.SeriesDescription, VR.LO, seriesDescription);
 
         attrs.setString(Tag.StudyID, VR.SH, patientID + "");
 
-        attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
-        attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
+        //attrs.setString(Tag.MediaStorageSOPClassUID, VR.UI, attrs.getString(Tag.SOPClassUID));
+        //attrs.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, attrs.getString(Tag.SOPInstanceUID));
 
-//        attrs.setString(Tag.AcquisitionDate, VR.DA, dateToday);
-//        attrs.setString(Tag.AcquisitionTime, VR.TM, timeToday);
+        attrs.setString(Tag.AcquisitionDate, VR.DA, dateToday);
+        attrs.setString(Tag.AcquisitionTime, VR.TM, timeToday);
 
-//        attrs.setString(Tag.StudyDate, VR.DA, dateToday);
-//        attrs.setString(Tag.StudyTime, VR.TM, timeToday + "000"); // Format farklı StudyTime: 181011.629388
+        attrs.setString(Tag.StudyDate, VR.DA, dateToday);
+        attrs.setString(Tag.SeriesDate, VR.DA, dateToday);
+        attrs.setString(Tag.StudyTime, VR.TM, timeToday + "000"); // Format farklı StudyTime: 181011.629388
 
         attrs.setString(Tag.PatientID, VR.LO, patientID + "");
-        attrs.setString(Tag.PatientName, VR.PN, "Patient-MR-" + patientID + "");
-        attrs.setString(Tag.AccessionNumber, VR.LO, "MR" + attrs.getString(Tag.StudyID));
+        attrs.setString(Tag.PatientName, VR.PN, "Patient-CTA-" + patientID + "");
+        attrs.setString(Tag.AccessionNumber, VR.LO, "CTA" + attrs.getString(Tag.StudyID));
 
 //        attrs.setString(Tag.Manufacturer, VR.LO, "GE");
 
-//        attrs.setString(Tag.PatientBirthDate, VR.DA, "19670501");
-//        attrs.setString(Tag.PatientSex, VR.CS, "M");
+        attrs.setString(Tag.PatientBirthDate, VR.DA, "19670501");
+        attrs.setString(Tag.PatientSex, VR.CS, "F");
         attrs.setString(Tag.PatientAge, VR.AS, "055Y");
 
         if(seriesDescription=="DIF") {
@@ -137,7 +138,7 @@ public class Attrs {
 
         attrs.setString(Tag.SliceThickness, VR.DS, "5");
 
-        attrs.setString(Tag.InstitutionName, VR.LO, "Hospital-1");
+        //attrs.setString(Tag.InstitutionName, VR.LO, "Hospital-1");
         attrs.setString(Tag.StationName, VR.SH, "Station-1");
         System.out.println("-->" + attrs.getString(Tag.StudyDescription));
     }
@@ -149,7 +150,7 @@ public class Attrs {
         sourcePathStr+="\\";
 
 
-        // String sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\Patient"+i+"\\";
+        // sourcePathStr = "D:\\Users\\melih\\Downloads\\BT KANAMA demo örnekler\\BT KANAMA\\Patient"+i+"\\";
 
 
         File dicomPath = new File(sourcePathStr);
@@ -184,7 +185,7 @@ public class Attrs {
                 // NEW FILE
                 //String destinationPathStr = "D:\\Users\\melih\\Documents\\HEVI\\Yeni Veriler\\Patient" + number + "\\";
                 //String destinationPathStr = "D:\\HEVI\\VERİ\\yeni-mri\\Patient" + number + "\\";
-                String destinationPathStr = "D:\\HEVI\\VERİ\\yeni-mri\\"+attrs.getString(Tag.PatientID) + "-" + attrs.getString(Tag.PatientName)+ "\\" +
+                String destinationPathStr = "D:\\HEVI\\VERİ\\yeni-CTA-DATA\\"+attrs.getString(Tag.PatientID) + "-" + attrs.getString(Tag.PatientName)+ "\\" +
                                                                         attrs.getString(Tag.StudyInstanceUID) + "-" + attrs.getString(Tag.StudyDescription) + "\\" +
                                                                         attrs.getString(Tag.SeriesInstanceUID) + "-" + attrs.getString((Tag.SeriesDescription));
 
